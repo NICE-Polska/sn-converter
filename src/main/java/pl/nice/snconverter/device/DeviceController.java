@@ -1,10 +1,13 @@
 package pl.nice.snconverter.device;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.nice.snconverter.AppConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.nice.snconverter.device.dto.DeviceCreateDTO;
 import pl.nice.snconverter.device.dto.DeviceDTOMapper;
 import pl.nice.snconverter.device.dto.DeviceUpdateDTO;
@@ -14,7 +17,6 @@ import pl.nice.snconverter.paging.PageAdvice;
 import pl.nice.snconverter.response.FieldsToMapConverter;
 import pl.nice.snconverter.response.ResponseDetails;
 import pl.nice.snconverter.utils.urlfilter.URLFilter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
@@ -22,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/devices")
@@ -44,7 +47,6 @@ public class DeviceController {
             throw new PageNumberTooHighException(
                     MessageContent.PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
         urlFilter.setFilter(filter);
-
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
                         ResponseDetails.builder()
