@@ -197,4 +197,4 @@ buildNumber.properties
 HELP.md
 mvnw
 mvnw.cmd
-logs.log
+application.log
