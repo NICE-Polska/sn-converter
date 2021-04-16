@@ -38,6 +38,7 @@ public class DeviceController {
     @GetMapping(params = {"filter", "page"})
     ResponseEntity<Map<String, Object>> findAllDevicesByFilterParams(
             @RequestParam List<String> filter, @RequestParam int page, HttpServletRequest request) {
+        log.info("Test {}", this.getClass().getSimpleName());
         int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage"));
 
         int totalRecords = Math.toIntExact(deviceService.countAllDevicesByFilerParams(filter));
