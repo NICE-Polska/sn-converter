@@ -25,13 +25,13 @@ import java.util.UUID;
 public class MediaService {
     private final MediaRepository mediaRepository;
 
-    MediaShowDTO findById(Long id) {
+    public MediaShowDTO findById(Long id) {
         return MediaDtoMapper.entityToDtoShow(
                 mediaRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(MessageContent.MEDIA_NOT_FOUND + id)));
     }
 
-    Media create(MultipartFile file) throws IOException {
+    public Media create(MultipartFile file) throws IOException {
         if(!isAcceptedMediaType(file.getContentType()))
             throw new BadFileTypeException(MessageContent.MEDIA_BAD_FILE);
 
@@ -47,7 +47,7 @@ public class MediaService {
         return mediaRepository.save(media);
     }
 
-    String doOcr(MultipartFile file) {
+    public String doOcr(MultipartFile file) {
         if(!isAcceptedMediaType(file.getContentType()))
             throw new BadFileTypeException(MessageContent.MEDIA_BAD_FILE);
 
@@ -66,13 +66,13 @@ public class MediaService {
         return null;
     }
 
-    void delete(Long id) {
+    public void delete(Long id) {
         Media media = mediaRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(MessageContent.MEDIA_NOT_FOUND + id));
         mediaRepository.deleteById(media.getId());
     }
 
-    Long count() {
+    public Long count() {
         return mediaRepository.count();
     }
 

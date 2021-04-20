@@ -24,7 +24,7 @@ public class DeviceService {
     private final URLFilter urlFilter;
     private final AppConfig appConfig;
 
-    List<DeviceShowDTO> findAllDevicesByFilterParams(int page, int recordsPerPage, List<String> filter) {
+    public List<DeviceShowDTO> findAllDevicesByFilterParams(int page, int recordsPerPage, List<String> filter) {
         urlFilter.setFilter(filter);
         Pageable pageRequest = PageRequest.of(page - 1, recordsPerPage);
         return deviceRepository.findAllDevicesByFilterParams(
@@ -39,50 +39,50 @@ public class DeviceService {
                 .collect(Collectors.toList());
     }
 
-    List<DeviceShowDTO> findAllByPage(int page, int recordsPerPage) {
+    public List<DeviceShowDTO> findAllByPage(int page, int recordsPerPage) {
         Pageable pageRequest = PageRequest.of(page - 1, recordsPerPage);
         return deviceRepository.findAll(pageRequest).stream()
                 .map(DeviceDTOMapper::entityToDtoShow)
                 .collect(Collectors.toList());
     }
 
-    DeviceShowDTO findById(Long id) {
+    public DeviceShowDTO findById(Long id) {
         return DeviceDTOMapper.entityToDtoShow(
                 deviceRepository.findById(id)
                         .orElseThrow(() -> new ObjectNotFoundException(MessageContent.DEVICE_NOT_FOUND + id))
         );
     }
 
-    DeviceShowDTO findDeviceBySerialNumber(String serialNumber) {
+    public DeviceShowDTO findDeviceBySerialNumber(String serialNumber) {
         return DeviceDTOMapper.entityToDtoShow(
                 deviceRepository.findDeviceBySerialNumber(serialNumber)
                 .orElseThrow(() -> new ObjectNotFoundException(MessageContent.DEVICE_SN_NOT_FOUND + serialNumber))
         );
     }
 
-    Device update(DeviceUpdateDTO deviceUpdateDTO, Long id) {
+    public Device update(DeviceUpdateDTO deviceUpdateDTO, Long id) {
         Device device = deviceRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(MessageContent.DEVICE_NOT_FOUND + id));
 
         return deviceRepository.save(DeviceDTOMapper.dtoToEntityUpdate(deviceUpdateDTO, device));
     }
 
-    Device create(DeviceCreateDTO deviceCreateDTO) {
+    public Device create(DeviceCreateDTO deviceCreateDTO) {
         return deviceRepository.save(DeviceDTOMapper.dtoToEntityCreate(deviceCreateDTO));
     }
 
-    void delete(Long id) {
+    public void delete(Long id) {
         deviceRepository.delete(
                 deviceRepository.findById(id)
                         .orElseThrow(() -> new ObjectNotFoundException(MessageContent.DEVICE_NOT_FOUND + id))
         );
     }
 
-    Long count() {
+    public Long count() {
         return deviceRepository.count();
     }
 
-    Long countAllDevicesByFilerParams(List<String> filter) {
+    public Long countAllDevicesByFilerParams(List<String> filter) {
         urlFilter.setFilter(filter);
         Long counter =  deviceRepository.countAllDevicesByFilerParams(
                 urlFilter.getParam("idax"),

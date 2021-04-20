@@ -21,7 +21,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final AppConfig appConfig;
 
-    List<CustomerShowDTO> findAllByPage(int page, int recordsPerPage) {
+    public List<CustomerShowDTO> findAllByPage(int page, int recordsPerPage) {
         Pageable pageRequest = PageRequest.of(page - 1, recordsPerPage);
         return customerRepository.findAll(pageRequest).stream()
                 .map(CustomerDTOMapper::entityToDtoShow)
@@ -34,32 +34,32 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
-    CustomerShowDTO findById(Long id) {
+    public CustomerShowDTO findById(Long id) {
         return CustomerDTOMapper.entityToDtoShow(
                 customerRepository.findById(id)
                         .orElseThrow(() -> new ObjectNotFoundException(MessageContent.CUSTOMER_NOT_FOUND + id))
         );
     }
 
-    Customer update(CustomerUpdateDTO customerUpdateDTO, Long id) {
+    public Customer update(CustomerUpdateDTO customerUpdateDTO, Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(MessageContent.CUSTOMER_NOT_FOUND + id));
 
         return customerRepository.save(CustomerDTOMapper.dtoToEntityUpdate(customerUpdateDTO, customer));
     }
 
-    Customer create(CustomerCreateDTO customerCreateDTO) {
+    public Customer create(CustomerCreateDTO customerCreateDTO) {
         return customerRepository.save(CustomerDTOMapper.dtoToEntityCreate(customerCreateDTO));
     }
 
-    void delete(Long id) {
+    public void delete(Long id) {
         customerRepository.delete(
                 customerRepository.findById(id)
                         .orElseThrow(() -> new ObjectNotFoundException(MessageContent.CUSTOMER_NOT_FOUND + id))
         );
     }
 
-    Long count() {
+    public Long count() {
         return customerRepository.count();
     }
 

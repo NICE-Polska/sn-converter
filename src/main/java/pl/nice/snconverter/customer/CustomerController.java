@@ -30,7 +30,7 @@ public class CustomerController {
     private final AppConfig appConfig;
 
     @GetMapping(params = "page")
-    ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
         int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage" +
                 ""));
 
@@ -54,7 +54,7 @@ public class CustomerController {
     }
 
     @GetMapping("/")
-    ResponseEntity<Map<String, Object>> findAll() {
+    public ResponseEntity<Map<String, Object>> findAll() {
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
                         ResponseDetails.builder()
@@ -65,7 +65,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
+   public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
 
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
@@ -77,7 +77,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Map<String, Object>> update(@Valid @RequestBody CustomerUpdateDTO customerUpdateDTO, @PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody CustomerUpdateDTO customerUpdateDTO, @PathVariable Long id) {
         Customer customer = customerService.update(customerUpdateDTO, id);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(id)
@@ -95,7 +95,7 @@ public class CustomerController {
     }
 
     @PostMapping ()
-    ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CustomerCreateDTO customerCreateDTO) {
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CustomerCreateDTO customerCreateDTO) {
         Customer customer = customerService.create(customerCreateDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -111,7 +111,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Map<String, Object>> delete (@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> delete (@PathVariable Long id) {
         customerService.delete(id);
 
         return ResponseEntity.ok()
@@ -126,7 +126,7 @@ public class CustomerController {
     }
 
     @GetMapping("/quantity")
-    ResponseEntity<Map<String, Object>> count() {
+    public ResponseEntity<Map<String, Object>> count() {
         Map<String, Long> dataResponse = new HashMap<>();
         dataResponse.put(MessageContent.ITEMS, customerService.count());
 
