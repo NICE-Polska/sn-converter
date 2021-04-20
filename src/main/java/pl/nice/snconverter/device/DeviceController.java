@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.nice.snconverter.AppConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.nice.snconverter.device.dto.DeviceCreateDTO;
 import pl.nice.snconverter.device.dto.DeviceDTOMapper;
 import pl.nice.snconverter.device.dto.DeviceUpdateDTO;
@@ -38,7 +36,7 @@ public class DeviceController {
     @GetMapping(params = {"filter", "page"})
     ResponseEntity<Map<String, Object>> findAllDevicesByFilterParams(
             @RequestParam List<String> filter, @RequestParam int page, HttpServletRequest request) {
-        log.info("Test {}", this.getClass().getSimpleName());
+
         int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage"));
 
         int totalRecords = Math.toIntExact(deviceService.countAllDevicesByFilerParams(filter));
@@ -46,7 +44,7 @@ public class DeviceController {
 
         if(page > pageAdvice.getTotalPages(totalRecords))
             throw new PageNumberTooHighException(
-                    MessageContent.PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
+                    MessageContent.EX_PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
         urlFilter.setFilter(filter);
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(

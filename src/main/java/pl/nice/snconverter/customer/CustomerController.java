@@ -31,14 +31,15 @@ public class CustomerController {
 
     @GetMapping(params = "page")
     ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
-        int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsOnPage"));
+        int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage" +
+                ""));
 
         int totalRecords = Math.toIntExact(customerService.count());
         pageAdvice.setRecordsPerPage(recordsOnPage);
 
         if(page > pageAdvice.getTotalPages(totalRecords))
             throw new PageNumberTooHighException(
-                    MessageContent.PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
+                    MessageContent.EX_PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
 
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(

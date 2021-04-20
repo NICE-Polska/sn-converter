@@ -10,6 +10,7 @@ import pl.nice.snconverter.customer.dto.CustomerDTOMapper;
 import pl.nice.snconverter.customer.dto.CustomerShowDTO;
 import pl.nice.snconverter.customer.dto.CustomerUpdateDTO;
 import pl.nice.snconverter.exception.ObjectNotFoundException;
+import pl.nice.snconverter.exception.unique.IUnique;
 import pl.nice.snconverter.message.MessageContent;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,4 +62,5 @@ public class CustomerService {
     Long count() {
         return customerRepository.count();
     }
+
 }

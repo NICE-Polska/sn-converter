@@ -9,6 +9,7 @@ import pl.nice.snconverter.device.dto.DeviceCreateDTO;
 import pl.nice.snconverter.device.dto.DeviceDTOMapper;
 import pl.nice.snconverter.device.dto.DeviceShowDTO;
 import pl.nice.snconverter.device.dto.DeviceUpdateDTO;
+import pl.nice.snconverter.exception.NoResultsForQueryException;
 import pl.nice.snconverter.exception.ObjectNotFoundException;
 import pl.nice.snconverter.message.MessageContent;
 import pl.nice.snconverter.utils.urlfilter.URLFilter;
@@ -26,7 +27,7 @@ public class DeviceService {
     List<DeviceShowDTO> findAllDevicesByFilterParams(int page, int recordsPerPage, List<String> filter) {
         urlFilter.setFilter(filter);
         Pageable pageRequest = PageRequest.of(page - 1, recordsPerPage);
-        return deviceRepository.findAllDevicesByFilerParams(
+        return deviceRepository.findAllDevicesByFilterParams(
                 urlFilter.getParam("idax"),
                 urlFilter.getParam("customer"),
                 urlFilter.getParam("vatId"),
@@ -83,7 +84,7 @@ public class DeviceService {
 
     Long countAllDevicesByFilerParams(List<String> filter) {
         urlFilter.setFilter(filter);
-        return deviceRepository.countAllDevicesByFilerParams(
+        Long counter =  deviceRepository.countAllDevicesByFilerParams(
                 urlFilter.getParam("idax"),
                 urlFilter.getParam("customer"),
                 urlFilter.getParam("vatId"),
@@ -91,7 +92,10 @@ public class DeviceService {
                 urlFilter.getParam("serialNumber"),
                 urlFilter.getParamAsDate("shipmentDateStart", LocalDate.parse(appConfig.getConfigValues().getProperty("startDateToFilterQuery"))),
                 urlFilter.getParamAsDate("shipmentDateEnd", LocalDate.now()));
+        if (counter == 0) throw new NoResultsForQueryException(MessageContent.EX_NO_RECORDS_FOUND);
+        return counter;
     }
 }
 //TODO parametr recordsOnPage przenieśc do serwisu (nie musi byc przekazywany z kontrolera)
 //TODO dodac exception noResultsForQuery (zeby nie obslugiwac braku wynikow przez PageNumberToHigh - najlepiej w countAllDevicesByFilerParams
+//TODO kaskady
