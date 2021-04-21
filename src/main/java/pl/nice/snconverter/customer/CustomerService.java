@@ -1,6 +1,9 @@
 package pl.nice.snconverter.customer;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CustomerService {
+public class CustomerService implements IUnique {
     private final CustomerRepository customerRepository;
     private final AppConfig appConfig;
 
@@ -63,4 +66,15 @@ public class CustomerService {
         return customerRepository.count();
     }
 
+    @Override
+    public boolean checkUnique(String columnName, String value) {
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("id")
+                .withMatcher(columnName, ExampleMatcher.GenericPropertyMatchers.ignoreCase());
+
+        Customer customer = new Customer();
+        customer.setIdax(value);
+        Example<Customer> example = Example.of(customer, matcher);
+        return !customerRepository.exists(example);
+    }
 }

@@ -25,7 +25,7 @@ import java.net.URI;
 import java.util.*;
 
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/media")

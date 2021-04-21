@@ -95,6 +95,7 @@ public class DeviceService {
         if (counter == 0) throw new NoResultsForQueryException(MessageContent.EX_NO_RECORDS_FOUND);
         return counter;
     }
+
 }
 //TODO parametr recordsOnPage przenieśc do serwisu (nie musi byc przekazywany z kontrolera)
 //TODO dodac exception noResultsForQuery (zeby nie obslugiwac braku wynikow przez PageNumberToHigh - najlepiej w countAllDevicesByFilerParams

@@ -22,7 +22,7 @@ public class Device {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(name = "serial_number", nullable = false, length = 20)
+    @Column(name = "serial_number", nullable = false, unique = true, length = 20)
     private String serialNumber;
 
     @Column(name = "dates_of_shipment")

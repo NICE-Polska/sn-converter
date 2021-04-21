@@ -11,7 +11,8 @@ import javax.validation.Payload;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unique {
-    String fieldName();
+    String columnName();
+    Class<?> clazz();
     String message() default "{unique.error.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

@@ -17,6 +17,7 @@ public class MessageContent {
     public static final String VALID_MAX_SIZE = "Size cannot be larger than ";
     public static final String VALID_EMAIL = "Not valid email address";
     public static final String VALID_FIELD_VALID = "[Valid] field ";
+    public static final String VALID_UNIQUE = "Must be unique";
 
     /*---------------- User -----------------*/
     public static final String USER_NOT_FOUND = "No user found for id ";
