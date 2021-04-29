@@ -1,7 +1,6 @@
 package pl.nice.snconverter.customer;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
@@ -13,14 +12,15 @@ import pl.nice.snconverter.customer.dto.CustomerDTOMapper;
 import pl.nice.snconverter.customer.dto.CustomerShowDTO;
 import pl.nice.snconverter.customer.dto.CustomerUpdateDTO;
 import pl.nice.snconverter.exception.ObjectNotFoundException;
-import pl.nice.snconverter.exception.unique.IUnique;
+import pl.nice.snconverter.exception.unique.UniqueHandler;
 import pl.nice.snconverter.message.MessageContent;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CustomerService implements IUnique {
+public class CustomerService implements UniqueHandler {
     private final CustomerRepository customerRepository;
     private final AppConfig appConfig;
 
@@ -45,7 +45,7 @@ public class CustomerService implements IUnique {
     }
 
     public Customer update(CustomerUpdateDTO customerUpdateDTO, Long id) {
-        Customer customer = customerRepository.findById(id)
+        var customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(MessageContent.CUSTOMER_NOT_FOUND + id));
 
         return customerRepository.save(CustomerDTOMapper.dtoToEntityUpdate(customerUpdateDTO, customer));
@@ -67,14 +67,35 @@ public class CustomerService implements IUnique {
     }
 
     @Override
-    public boolean checkUnique(String columnName, String value) {
+    public boolean isUnique(String fieldName, String value) {
+        return !customerRepository.exists(createExample(fieldName, value));
+    }
+
+    @Override
+    public boolean isUnique(String fieldName, String value, Long id) {
+        var example = createExample(fieldName, value);
+        if(customerRepository.exists(example)) {
+            var customer = customerRepository.findOne(example);
+            return customer.get().getId().equals(id);
+        }
+        return true;
+    }
+
+    private Example<Customer> createExample(String fieldName, String value) {
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnorePaths("id")
-                .withMatcher(columnName, ExampleMatcher.GenericPropertyMatchers.ignoreCase());
+                .withMatcher(fieldName, ExampleMatcher.GenericPropertyMatchers.ignoreCase());
 
-        Customer customer = new Customer();
-        customer.setIdax(value);
-        Example<Customer> example = Example.of(customer, matcher);
-        return !customerRepository.exists(example);
+        var customer = new Customer();
+        try {
+            var field = customer.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(customer, value);
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return Example.of(customer, matcher);
     }
 }

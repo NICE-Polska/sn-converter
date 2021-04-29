@@ -3,6 +3,9 @@ package pl.nice.snconverter.customer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import pl.nice.snconverter.exception.unique.Operation;
+import pl.nice.snconverter.exception.unique.Unique;
+
 import javax.persistence.*;
 
 @Data

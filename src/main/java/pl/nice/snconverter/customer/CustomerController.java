@@ -1,6 +1,7 @@
 package pl.nice.snconverter.customer;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -9,13 +10,13 @@ import pl.nice.snconverter.customer.dto.CustomerCreateDTO;
 import pl.nice.snconverter.customer.dto.CustomerDTOMapper;
 import pl.nice.snconverter.customer.dto.CustomerUpdateDTO;
 import pl.nice.snconverter.exception.PageNumberTooHighException;
+import pl.nice.snconverter.exception.unique.Unique;
 import pl.nice.snconverter.message.MessageContent;
 import pl.nice.snconverter.paging.PageAdvice;
 import pl.nice.snconverter.response.FieldsToMapConverter;
 import pl.nice.snconverter.response.ResponseDetails;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +32,10 @@ public class CustomerController {
 
     @GetMapping(params = "page")
     public ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
-        int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage" +
+        var recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage" +
                 ""));
 
-        int totalRecords = Math.toIntExact(customerService.count());
+        var totalRecords = Math.toIntExact(customerService.count());
         pageAdvice.setRecordsPerPage(recordsOnPage);
 
         if(page > pageAdvice.getTotalPages(totalRecords))
@@ -78,8 +79,8 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody CustomerUpdateDTO customerUpdateDTO, @PathVariable Long id) {
-        Customer customer = customerService.update(customerUpdateDTO, id);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        var customer = customerService.update(customerUpdateDTO, id);
+        var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(id)
                 .toUri();
 
@@ -96,8 +97,8 @@ public class CustomerController {
 
     @PostMapping ()
     public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CustomerCreateDTO customerCreateDTO) {
-        Customer customer = customerService.create(customerCreateDTO);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        var customer = customerService.create(customerCreateDTO);
+        var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(customer.getId())
                 .toUri();

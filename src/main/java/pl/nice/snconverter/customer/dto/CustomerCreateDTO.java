@@ -25,7 +25,7 @@ public class CustomerCreateDTO {
     @Size(max = 60, message = MessageContent.VALID_MAX_SIZE + 60)
     String name;
 
-    @Unique(columnName = "idax", clazz = CustomerService.class, message = MessageContent.VALID_UNIQUE)
+    @Unique(fieldName = "idax", handler = CustomerService.class, message = MessageContent.VALID_UNIQUE)
     @NotNull(message = MessageContent.VALID_NOT_NULL)
     @NotBlank(message = MessageContent.VALID_NOT_BLANK)
     @Size(max = 4, message = MessageContent.VALID_MAX_SIZE + 4)

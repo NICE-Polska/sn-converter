@@ -8,12 +8,13 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Constraint(validatedBy = UniqueValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unique {
-    String columnName();
-    Class<?> clazz();
+    String fieldName();
+    Class<?> handler();;
     String message() default "{unique.error.message}";
+    Operation operation() default Operation.CREATE;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
