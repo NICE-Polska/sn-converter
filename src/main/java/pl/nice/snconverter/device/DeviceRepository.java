@@ -20,13 +20,13 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             "and (d.name like %:name% )" +
             "and (d.serialNumber like %:serialNumber%)" +
             "and d.dateOfShipment >= :shipmentDateStart and d.dateOfShipment <= :shipmentDateEnd")
-    List<Device> findAllDevicesByFilerParams(@Param("idax") String idax,
-                                             @Param("customer") String customer,
-                                             @Param("vatId") String vatId,
-                                             @Param("name") String name,
-                                             @Param("serialNumber") String serialNumber,
-                                             @Param("shipmentDateStart")LocalDate shipmentDateStart,
-                                             @Param("shipmentDateEnd") LocalDate shipmentDateEnd, Pageable pageRequest);
+    List<Device> findAllDevicesByFilterParams(@Param("idax") String idax,
+                                              @Param("customer") String customer,
+                                              @Param("vatId") String vatId,
+                                              @Param("name") String name,
+                                              @Param("serialNumber") String serialNumber,
+                                              @Param("shipmentDateStart")LocalDate shipmentDateStart,
+                                              @Param("shipmentDateEnd") LocalDate shipmentDateEnd, Pageable pageRequest);
 
     @Query("select count(d) from Device d where (d.customer.idax like %:idax%)" +
             "and (d.customer.name like %:customer%)" +

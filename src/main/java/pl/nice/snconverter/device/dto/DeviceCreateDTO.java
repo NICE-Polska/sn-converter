@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 import pl.nice.snconverter.customer.dto.CustomerIdOnlyDTO;
+import pl.nice.snconverter.exception.unique.Unique;
 import pl.nice.snconverter.media.dto.MediaOnlyIdDTO;
 import pl.nice.snconverter.message.MessageContent;
 import javax.validation.constraints.NotBlank;

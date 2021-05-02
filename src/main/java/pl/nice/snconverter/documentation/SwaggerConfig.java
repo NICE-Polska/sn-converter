@@ -23,7 +23,7 @@ public class SwaggerConfig
     public static final ApiInfo DEFAULT_API_INFO = new ApiInfo("SN Converter", "RESTful Api Documentation", "0.0.0.alpha", "urn:tos",
             DEFAULT_CONTACT, "EULA", "http://localhost/eula", new ArrayList<VendorExtension>());
 
-    private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<String>(Arrays.asList("application/json","application/xml"));
+    private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<String>(Arrays.asList("application/json"));
 
     @Bean
     public Docket api()

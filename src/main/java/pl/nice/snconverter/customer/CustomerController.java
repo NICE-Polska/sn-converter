@@ -15,11 +15,10 @@ import pl.nice.snconverter.response.FieldsToMapConverter;
 import pl.nice.snconverter.response.ResponseDetails;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/customers")
@@ -30,15 +29,16 @@ public class CustomerController {
     private final AppConfig appConfig;
 
     @GetMapping(params = "page")
-    ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
-        int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsOnPage"));
+    public ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
+        var recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage" +
+                ""));
 
-        int totalRecords = Math.toIntExact(customerService.count());
+        var totalRecords = Math.toIntExact(customerService.count());
         pageAdvice.setRecordsPerPage(recordsOnPage);
 
         if(page > pageAdvice.getTotalPages(totalRecords))
             throw new PageNumberTooHighException(
-                    MessageContent.PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
+                    MessageContent.EX_PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
 
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
@@ -53,7 +53,7 @@ public class CustomerController {
     }
 
     @GetMapping("/")
-    ResponseEntity<Map<String, Object>> findAll() {
+    public ResponseEntity<Map<String, Object>> findAll() {
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
                         ResponseDetails.builder()
@@ -64,7 +64,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
+   public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
 
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
@@ -76,9 +76,9 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Map<String, Object>> update(@Valid @RequestBody CustomerUpdateDTO customerUpdateDTO, @PathVariable Long id) {
-        Customer customer = customerService.update(customerUpdateDTO, id);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+    public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody CustomerUpdateDTO customerUpdateDTO, @PathVariable Long id) {
+        var customer = customerService.update(customerUpdateDTO, id);
+        var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(id)
                 .toUri();
 
@@ -94,9 +94,9 @@ public class CustomerController {
     }
 
     @PostMapping ()
-    ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CustomerCreateDTO customerCreateDTO) {
-        Customer customer = customerService.create(customerCreateDTO);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CustomerCreateDTO customerCreateDTO) {
+        var customer = customerService.create(customerCreateDTO);
+        var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(customer.getId())
                 .toUri();
@@ -110,7 +110,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Map<String, Object>> delete (@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> delete (@PathVariable Long id) {
         customerService.delete(id);
 
         return ResponseEntity.ok()
@@ -125,7 +125,7 @@ public class CustomerController {
     }
 
     @GetMapping("/quantity")
-    ResponseEntity<Map<String, Object>> count() {
+    public ResponseEntity<Map<String, Object>> count() {
         Map<String, Long> dataResponse = new HashMap<>();
         dataResponse.put(MessageContent.ITEMS, customerService.count());
 

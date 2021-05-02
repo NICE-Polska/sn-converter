@@ -10,4 +10,9 @@ public class PageNumberTooHighException extends RuntimeException{
         super(message);
         this.pageNumber = pageNumber;
     }
+
+    public String getErrorCode() {
+        String errorCode = "0xPNTH";
+        return errorCode;
+    }
 }

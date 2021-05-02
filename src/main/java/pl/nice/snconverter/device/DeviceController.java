@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.nice.snconverter.AppConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.nice.snconverter.device.dto.DeviceCreateDTO;
 import pl.nice.snconverter.device.dto.DeviceDTOMapper;
 import pl.nice.snconverter.device.dto.DeviceUpdateDTO;
@@ -36,9 +34,9 @@ public class DeviceController {
     private final AppConfig appConfig;
 
     @GetMapping(params = {"filter", "page"})
-    ResponseEntity<Map<String, Object>> findAllDevicesByFilterParams(
+    public ResponseEntity<Map<String, Object>> findAllDevicesByFilterParams(
             @RequestParam List<String> filter, @RequestParam int page, HttpServletRequest request) {
-        log.info("Test {}", this.getClass().getSimpleName());
+
         int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage"));
 
         int totalRecords = Math.toIntExact(deviceService.countAllDevicesByFilerParams(filter));
@@ -46,7 +44,7 @@ public class DeviceController {
 
         if(page > pageAdvice.getTotalPages(totalRecords))
             throw new PageNumberTooHighException(
-                    MessageContent.PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
+                    MessageContent.EX_PAGE_NUM_TO_HIGH + pageAdvice.getTotalPages(totalRecords), page);
         urlFilter.setFilter(filter);
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
@@ -61,7 +59,7 @@ public class DeviceController {
     }
 
     /*@GetMapping(params = "page")
-    ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
         int recordsOnPage = Integer.parseInt(appConfig.getConfigValues().getProperty("recordsPerPage"));
 
         int totalRecords = Math.toIntExact(deviceService.count());
@@ -84,7 +82,7 @@ public class DeviceController {
     }*/
 
     @GetMapping("/{id}")
-    ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
 
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
@@ -95,7 +93,7 @@ public class DeviceController {
                 ));
     }
     @GetMapping("/serial-number/{serialNumber}")
-    ResponseEntity<Map<String, Object>> findDeviceBySerialNUmber(@PathVariable String serialNumber) {
+    public ResponseEntity<Map<String, Object>> findDeviceBySerialNUmber(@PathVariable String serialNumber) {
 
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
@@ -107,7 +105,7 @@ public class DeviceController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<Map<String, Object>> update(@Valid @RequestBody DeviceUpdateDTO deviceUpdateDTO, @PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody DeviceUpdateDTO deviceUpdateDTO, @PathVariable Long id) {
         Device device = deviceService.update(deviceUpdateDTO, id);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .buildAndExpand(id)
@@ -125,7 +123,7 @@ public class DeviceController {
     }
 
     @PostMapping ()
-    ResponseEntity<Map<String, Object>> create(@Valid @RequestBody DeviceCreateDTO deviceCreateDTO) {
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody DeviceCreateDTO deviceCreateDTO) {
         Device device = deviceService.create(deviceCreateDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -141,7 +139,7 @@ public class DeviceController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Map<String, Object>> delete (@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> delete (@PathVariable Long id) {
         deviceService.delete(id);
 
         return ResponseEntity.ok()
@@ -156,7 +154,7 @@ public class DeviceController {
     }
 
     @GetMapping("/quantity")
-    ResponseEntity<Map<String, Object>> count() {
+    public ResponseEntity<Map<String, Object>> count() {
         Map<String, Long> dataResponse = new HashMap<>();
         dataResponse.put(MessageContent.ITEMS, deviceService.count());
 

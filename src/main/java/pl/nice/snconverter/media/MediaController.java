@@ -25,7 +25,7 @@ import java.net.URI;
 import java.util.*;
 
 
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/media")
@@ -35,7 +35,7 @@ public class MediaController {
     private final CustomerService customerService;
 
     @GetMapping("/{id}")
-    ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(fieldsToMapConverter.getFieldsAsMap(
                         ResponseDetails.builder()
@@ -46,7 +46,7 @@ public class MediaController {
     }
 
     @PostMapping()
-    ResponseEntity<Map<String, Object>> create(@RequestBody MultipartFile file) throws IOException {
+    public ResponseEntity<Map<String, Object>> create(@RequestBody MultipartFile file) throws IOException {
         Media media = mediaService.create(file);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -62,7 +62,7 @@ public class MediaController {
     }
 
     @PostMapping("/ocr")
-    ResponseEntity<Map<String, Object>> doOcr(@RequestBody MultipartFile file) {
+    public ResponseEntity<Map<String, Object>> doOcr(@RequestBody MultipartFile file) {
         Map<String, Object> dataResponse = new HashMap<>();
         dataResponse.put(MessageContent.SERIAL_NUMBER, mediaService.doOcr(file));
 
@@ -78,7 +78,7 @@ public class MediaController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
         mediaService.delete(id);
         return ResponseEntity.ok()
                 .body(
@@ -92,7 +92,7 @@ public class MediaController {
     }
 
     @GetMapping("/quantity")
-    ResponseEntity<Map<String, Object>> count() {
+    public ResponseEntity<Map<String, Object>> count() {
         Map<String, Long> dataResponse = new HashMap<>();
         dataResponse.put(MessageContent.ITEMS, mediaService.count());
         return ResponseEntity.ok()
@@ -107,7 +107,7 @@ public class MediaController {
     }
 
     @GetMapping("/test")
-    void test(HttpServletResponse response) {
+    public void test(HttpServletResponse response) {
 
         Report report = ReportFactory.builder()
                 .reportType(ReportType.EXCEL)

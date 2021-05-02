@@ -7,11 +7,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import pl.nice.snconverter.media.AcceptedMediaType;
 import pl.nice.snconverter.message.MessageContent;
 import pl.nice.snconverter.response.FieldsToMapConverter;
 import pl.nice.snconverter.response.ResponseDetails;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestControllerAdvice
-public class RestExceptionAdvice {
+public class RestExceptionHandler {
     private final FieldsToMapConverter<ResponseDetails> fieldsToMapConverter;
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -30,6 +32,7 @@ public class RestExceptionAdvice {
                 .message(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .status(HttpStatus.NOT_FOUND.value())
                 .description(ex.getMessage())
+                .errorCode(ex.getErrorCode())
                 .url(request.getRequestURL().toString())
                 .build());
 
@@ -45,6 +48,7 @@ public class RestExceptionAdvice {
                         .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .description(MessageContent.VALID_FIELD_VALID + e.getField() + ". " + e.getDefaultMessage())
+                        .errorCode("0xV " + e.getCode().toString())
                         .url(request.getRequestURL().toString())
                         .build())
         );
@@ -60,6 +64,7 @@ public class RestExceptionAdvice {
                 .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .description(ex.getMessage())
+                .errorCode(ex.getErrorCode())
                 .url(request.getRequestURL().toString() + MessageContent.PAGE_IN_URL + ex.getPageNumber())
                 .build());
 
@@ -71,9 +76,10 @@ public class RestExceptionAdvice {
     ResponseEntity<Map<String, Object>> handleDatabaseTableEmptyException(DatabaseTableEmptyException ex, HttpServletRequest request) {
         List<Object> errorsList = new ArrayList<>();
         errorsList.add(ResponseErrorDetails.builder()
-                .message(MessageContent.NO_ITEMS_IN_TABLE)
+                .message(MessageContent.EX_NO_ITEMS_IN_TABLE)
                 .status(HttpStatus.NOT_FOUND.value())
                 .description(ex.getMessage())
+                .errorCode(ex.getErrorCode())
                 .url(request.getRequestURL().toString())
                 .build());
 
@@ -84,19 +90,78 @@ public class RestExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadFileTypeException.class)
     ResponseEntity<Map<String, Object>> handleBadFileTypeException(BadFileTypeException ex, HttpServletRequest request) {
-
         List<Object> errorsList = new ArrayList<>();
         errorsList.add(ResponseErrorDetails.builder()
-                .errorCode("0xBFT") //0 - runtime ex, BFT BadFileType
                 .message(ex.getMessage())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .description(MessageContent.MEDIA_ACCEPTED_FILE
                         + Arrays.toString(AcceptedMediaType.values()))
+                .errorCode("0xBFT") //0 - runtime ex, BFT BadFileType
                 .url(request.getRequestURL().toString())
                 .build());
 
         return createResponse(errorsList, HttpStatus.BAD_REQUEST);
 
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoResultsForQueryException.class)
+    ResponseEntity<Map<String, Object>> handleNoResultsForQueryException(NoResultsForQueryException ex, HttpServletRequest request) {
+        List<Object> errorsList = new ArrayList<>();
+        errorsList.add(ResponseErrorDetails.builder()
+        .errorCode("0xNRFQ") //0 - runtime ex, NRQF No Results For Query Exception
+        .message(HttpStatus.NOT_FOUND.getReasonPhrase())
+        .status(HttpStatus.NOT_FOUND.value())
+        .description(ex.getMessage())
+        .url(request.getRequestURL().toString())
+        .build());
+
+        return createResponse(errorsList, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        List<Object> errorsList = new ArrayList<>();
+        errorsList.add(ResponseErrorDetails.builder()
+        .errorCode("0xMATM")
+        .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
+        .status(HttpStatus.BAD_REQUEST.value())
+        .description(ex.getMessage())
+        .url(request.getRequestURL().toString())
+        .build());
+
+        return createResponse(errorsList, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    ResponseEntity<Map<String, Object>> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex, HttpServletRequest request) {
+        List<Object> errorsList = new ArrayList<>();
+        errorsList.add(ResponseErrorDetails.builder()
+                .errorCode("0xSICV")
+                .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .description(String.valueOf(ex.getErrorCode()))
+                .url(request.getRequestURL().toString())
+                .build());
+
+        return createResponse(errorsList, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        List<Object> errorsList = new ArrayList<>();
+        errorsList.add(ResponseErrorDetails.builder()
+                .errorCode("0xIA")
+                .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .description(ex.getMessage())
+                .url(request.getRequestURL().toString())
+                .build());
+
+        return createResponse(errorsList, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Map<String, Object>> createResponse(List<Object> errorsList, HttpStatus httpStatus) {
@@ -111,3 +176,4 @@ public class RestExceptionAdvice {
 }
 //TODO dorobić kod blędu - jakiś liczbowo cyfrowy
 //TODO sprawdzic co idzie w messagach i description
+//TODO sprawdzic spojnosc struktury odpowiedzi exception

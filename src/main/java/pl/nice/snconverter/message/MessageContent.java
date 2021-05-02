@@ -6,15 +6,18 @@ public class MessageContent {
     public static final String ERROR = "Error";
     public static final String PAGE_IN_URL = "?page=";
     public static final String ITEMS = "Items";
-    public static final String LAST_PAGE = "No more pages";
-    public static final String  PAGE_NUM_TO_HIGH = "Page number you are trying obtain too high. Last page number is ";
-    public static final String NO_ITEMS_IN_TABLE = "No items";
+    public static final String EX_LAST_PAGE = "No more pages";
+    public static final String EX_PAGE_NUM_TO_HIGH = "Page number you are trying obtain too high. Last page number is ";
+    public static final String EX_NO_ITEMS_IN_TABLE = "No items";
+    public static final String EX_NO_RECORDS_FOUND = "No results for query";
+    
     /*--------------Common Validation------------------*/
     public static final String VALID_NOT_NULL = "Cannot be null";
     public static final String VALID_NOT_BLANK = "Cannot be blank";
     public static final String VALID_MAX_SIZE = "Size cannot be larger than ";
     public static final String VALID_EMAIL = "Not valid email address";
     public static final String VALID_FIELD_VALID = "[Valid] field ";
+    public static final String VALID_UNIQUE = "Must be unique";
 
     /*---------------- User -----------------*/
     public static final String USER_NOT_FOUND = "No user found for id ";
