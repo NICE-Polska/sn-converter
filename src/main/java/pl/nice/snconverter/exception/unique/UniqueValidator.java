@@ -1,18 +1,19 @@
 package pl.nice.snconverter.exception.unique;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-@RequiredArgsConstructor
 public class UniqueValidator implements ConstraintValidator<Unique, String> {
     private String fieldName;
     private Class<?> handler;
     private Operation operation;
     private final ApplicationContext applicationContext;
-    private Object o;
+
+    public UniqueValidator(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public void initialize(Unique constraintAnnotation) {

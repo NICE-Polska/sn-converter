@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestControllerAdvice
-public class RestExceptionAdvice {
+public class RestExceptionHandler {
     private final FieldsToMapConverter<ResponseDetails> fieldsToMapConverter;
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -48,7 +48,7 @@ public class RestExceptionAdvice {
                         .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
                         .status(HttpStatus.BAD_REQUEST.value())
                         .description(MessageContent.VALID_FIELD_VALID + e.getField() + ". " + e.getDefaultMessage())
-                        .errorCode("0xV")
+                        .errorCode("0xV " + e.getCode().toString())
                         .url(request.getRequestURL().toString())
                         .build())
         );
@@ -143,6 +143,21 @@ public class RestExceptionAdvice {
                 .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .description(String.valueOf(ex.getErrorCode()))
+                .url(request.getRequestURL().toString())
+                .build());
+
+        return createResponse(errorsList, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        List<Object> errorsList = new ArrayList<>();
+        errorsList.add(ResponseErrorDetails.builder()
+                .errorCode("0xIA")
+                .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .description(ex.getMessage())
                 .url(request.getRequestURL().toString())
                 .build());
 

@@ -1,7 +1,6 @@
 package pl.nice.snconverter.customer;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -10,7 +9,6 @@ import pl.nice.snconverter.customer.dto.CustomerCreateDTO;
 import pl.nice.snconverter.customer.dto.CustomerDTOMapper;
 import pl.nice.snconverter.customer.dto.CustomerUpdateDTO;
 import pl.nice.snconverter.exception.PageNumberTooHighException;
-import pl.nice.snconverter.exception.unique.Unique;
 import pl.nice.snconverter.message.MessageContent;
 import pl.nice.snconverter.paging.PageAdvice;
 import pl.nice.snconverter.response.FieldsToMapConverter;
