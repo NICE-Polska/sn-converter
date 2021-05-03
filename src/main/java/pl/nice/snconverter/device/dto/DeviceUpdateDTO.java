@@ -2,7 +2,6 @@ package pl.nice.snconverter.device.dto;
 
 import lombok.Builder;
 import lombok.Value;
-import pl.nice.snconverter.customer.Customer;
 import pl.nice.snconverter.customer.dto.CustomerIdOnlyDTO;
 import pl.nice.snconverter.message.MessageContent;
 import javax.validation.constraints.NotBlank;
