@@ -1,11 +1,13 @@
 package pl.nice.snconverter.response;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 @Component
 public class FieldsToMapConverter<T> {
-
     public Map<String, Object> getFieldsAsMap(T t) {
         Class<?> c = t.getClass();
         Map<String, Object> fields = new LinkedHashMap<>();

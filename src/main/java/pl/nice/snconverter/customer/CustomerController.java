@@ -1,12 +1,14 @@
 package pl.nice.snconverter.customer;
 
 import lombok.RequiredArgsConstructor;
+import net.sourceforge.tess4j.Tesseract;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.nice.snconverter.AppConfig;
 import pl.nice.snconverter.customer.dto.CustomerCreateDTO;
 import pl.nice.snconverter.customer.dto.CustomerDTOMapper;
+import pl.nice.snconverter.customer.dto.CustomerShowDTO;
 import pl.nice.snconverter.customer.dto.CustomerUpdateDTO;
 import pl.nice.snconverter.exception.PageNumberTooHighException;
 import pl.nice.snconverter.message.MessageContent;
@@ -27,6 +29,7 @@ public class CustomerController {
     private final FieldsToMapConverter<ResponseDetails> fieldsToMapConverter;
     private final PageAdvice pageAdvice;
     private final AppConfig appConfig;
+    private final Test test;
 
     @GetMapping(params = "page")
     public ResponseEntity<Map<String, Object>> findBAllyPage(@RequestParam int page, HttpServletRequest request) {
@@ -93,7 +96,7 @@ public class CustomerController {
                 ));
     }
 
-    @PostMapping ()
+    @PostMapping()
     public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CustomerCreateDTO customerCreateDTO) {
         var customer = customerService.create(customerCreateDTO);
         var location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -107,6 +110,21 @@ public class CustomerController {
                         .data(CustomerDTOMapper.entityToDtoOnlyId(customer))
                         .location(location)
                         .build()));
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<Map<String, Object>> test() {
+
+        var customer = CustomerShowDTO.builder()
+                .name("Name")
+                .idax("4444")
+                .id(1L)
+                .build();
+        Map<String, Object> testMap = new HashMap<>();
+        var res = ResponseDetails.builder().status("ok").build();
+        testMap.put("Key", res);
+
+        return ResponseEntity.ok().body(testMap);
     }
 
     @DeleteMapping("/{id}")

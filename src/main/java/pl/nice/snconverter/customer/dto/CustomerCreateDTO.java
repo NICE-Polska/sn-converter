@@ -3,6 +3,7 @@ package pl.nice.snconverter.customer.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import pl.nice.snconverter.customer.CustomerService;
 import pl.nice.snconverter.exception.unique.Unique;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@EqualsAndHashCode
 @Value
 @Builder
 public class CustomerCreateDTO {
